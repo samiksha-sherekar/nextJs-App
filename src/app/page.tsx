@@ -1,5 +1,5 @@
 import CategoriesPage from "./categories/page";
-import CategoriesStorePage from "./categoryusingstore/page";
+import CategoryusingstorePage from "./categoryusingstore/page";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Home() {
@@ -32,7 +32,7 @@ export default function Home() {
              
             </p>
           </div>
-          <CategoriesStorePage />
+          <CategoryusingstorePage />
         </TabsContent>
       </Tabs>
     </div>

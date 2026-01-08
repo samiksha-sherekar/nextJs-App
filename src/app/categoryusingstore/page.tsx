@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 
-export default function CategoriesPage() {
+export default function CategoryusingstorePage() {
   const { categories, load, add, update, remove } = useCategoryStore();
 
   const [open, setOpen] = useState(false);
