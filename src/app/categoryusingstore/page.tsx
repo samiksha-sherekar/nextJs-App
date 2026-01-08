@@ -52,7 +52,7 @@ export default function CategoriesPage() {
 
   return (
     <div className="mx-auto p-4">
-      <Card className="w-3/5 mx-auto p-4">
+      <Card className="w-full mx-auto p-4">
         <CardHeader className="flex justify-between items-center">
           <CardTitle className="text-2xl">Categories</CardTitle>
 

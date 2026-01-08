@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,13 +25,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/supabase/client";
 
+// Force dynamic rendering since this page uses search params
+export const dynamic = 'force-dynamic';
+
 type Subcategory = {
   id: string;
   name: string;
   parent_id: string | null;
 };
 
-export default function SubcategoriesPage() {
+function SubcategoriesPage() {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,6 +48,7 @@ export default function SubcategoriesPage() {
   // form values
   const [name, setName] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
+
   // Get Data
   async function LoadSubCategories(){
     const { data } = await supabase.from("subcategories").select("*").eq("category_id", categoryId);
@@ -56,7 +60,8 @@ export default function SubcategoriesPage() {
   useEffect(() =>{
     LoadSubCategories();
   },[]);
-// CREATE or UPDATE — SAME BUTTON
+
+  // CREATE or UPDATE — SAME BUTTON
   async function saveCategory() {
     if (!name.trim()) return;
 
@@ -140,7 +145,6 @@ export default function SubcategoriesPage() {
                 </TableCell>
 
                 <TableCell className="border-r border-gray-300 space-x-2">
-
                   {/* EDIT uses same dialog */}
                   <Button
                     variant="outline"
@@ -167,5 +171,13 @@ export default function SubcategoriesPage() {
         </Table>
       </Card>
     </div>
+  );
+}
+
+export default function SubcategoriesPageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SubcategoriesPage />
+    </Suspense>
   );
 }
