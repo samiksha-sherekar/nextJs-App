@@ -1,4 +1,4 @@
-import CategoriesPage from "./categorise/page";
+import CategoriesPage from "./categories/page";
 import CategoriesStorePage from "./categoryusingstore/page";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
