@@ -163,7 +163,7 @@ export default function CategoriesPage() {
                   </Button>
                   <Button
                     variant="secondary"
-                    onClick={() => router.push(`/subcategorise?id=${cat.id}`)}
+                    onClick={() => router.push(`/subcategories?id=${cat.id}`)}
                   >
                     Sub Category
                   </Button>
