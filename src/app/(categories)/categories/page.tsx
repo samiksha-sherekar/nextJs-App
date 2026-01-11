@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,22 +25,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/supabase/client";
 
-// Force dynamic rendering since this page uses search params
-export const dynamic = 'force-dynamic';
-
-type Subcategory = {
+type Category = {
   id: string;
   name: string;
-  parent_id: string | null;
 };
 
-function SubcategoriesPage() {
-  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const categoryId = searchParams.get('id');
-  console.log(categoryId);
+export default function CategoriesPage() {
   const supabase = createClient();
+  const router = useRouter();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
   // shared dialog state
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"add" | "edit">("add");
@@ -49,17 +44,19 @@ function SubcategoriesPage() {
   const [name, setName] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
 
-  // Get Data
-  async function LoadSubCategories(){
-    const { data } = await supabase.from("subcategories").select("*").eq("category_id", categoryId);
-    console.log(data);
-    setSubcategories(data || []);
+  // READ
+  async function loadCategories() {
+    const { data } = await supabase
+      .from("categories")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    setCategories(data || []);
   }
 
-  // Hook
-  useEffect(() =>{
-    LoadSubCategories();
-  },[]);
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   // CREATE or UPDATE — SAME BUTTON
   async function saveCategory() {
@@ -67,10 +64,10 @@ function SubcategoriesPage() {
 
     if (mode === "add") {
       // CREATE
-      await supabase.from("subcategories").insert({ name, category_id: categoryId });
+      await supabase.from("categories").insert({ name });
     } else if (mode === "edit" && editId) {
       // UPDATE
-      await supabase.from("subcategories").update({ name }).eq("id", editId);
+      await supabase.from("categories").update({ name }).eq("id", editId);
     }
 
     // reset
@@ -78,20 +75,20 @@ function SubcategoriesPage() {
     setEditId(null);
     setOpen(false);
 
-    LoadSubCategories();
+    loadCategories();
   }
 
   // DELETE
   async function deleteCategory(id: string) {
-    await supabase.from("subcategories").delete().eq("id", id);
-    LoadSubCategories();
+    await supabase.from("categories").delete().eq("id", id);
+    loadCategories();
   }
 
   return (
     <div className="mx-auto p-4">
-      <Card className="w-3/5 mx-auto p-4">
+      <Card className="w-full mx-auto p-4">
         <CardHeader className="flex justify-between items-center">
-          <CardTitle className="text-2xl">Sub Categories</CardTitle>
+          <CardTitle className="text-2xl">Categories</CardTitle>
 
           {/* ADD button opens dialog in add mode */}
           <Dialog open={open} onOpenChange={setOpen}>
@@ -110,12 +107,12 @@ function SubcategoriesPage() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>
-                  {mode === "add" ? "Add Sub Category" : "Edit Sub Category"}
+                  {mode === "add" ? "Add Category" : "Edit Category"}
                 </DialogTitle>
               </DialogHeader>
 
               <Input
-                placeholder="Sub Category name"
+                placeholder="Category name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -132,19 +129,20 @@ function SubcategoriesPage() {
 
           <TableHeader>
             <TableRow>
-              <TableHead className="border-r border-gray-300">Sub Category</TableHead>
+              <TableHead className="border-r border-gray-300">Category</TableHead>
               <TableHead className="border-r border-gray-300">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {subcategories.map((cat) => (
+            {categories.map((cat) => (
               <TableRow key={cat.id}>
                 <TableCell className="font-medium border-r border-gray-300">
                   {cat.name}
                 </TableCell>
 
                 <TableCell className="border-r border-gray-300 space-x-2">
+
                   {/* EDIT uses same dialog */}
                   <Button
                     variant="outline"
@@ -164,6 +162,12 @@ function SubcategoriesPage() {
                   >
                     Delete
                   </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => router.push(`/subcategories?id=${cat.id}`)}
+                  >
+                    Sub Category
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -171,13 +175,5 @@ function SubcategoriesPage() {
         </Table>
       </Card>
     </div>
-  );
-}
-
-export default function SubcategoriesPageWrapper() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SubcategoriesPage />
-    </Suspense>
   );
 }
