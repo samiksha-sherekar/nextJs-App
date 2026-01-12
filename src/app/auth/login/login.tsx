@@ -37,12 +37,31 @@ export default function Login() {
     setLoading(true);
     setError('');
 
-    const { error } = await signUp(email, password);
+    if (!email.trim()) {
+      setError('Email is required');
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      setLoading(false);
+      return;
+    }
+
+    // For development: if email doesn't contain @, add a test domain
+    let signupEmail = email;
+    if (!email.includes('@')) {
+      signupEmail = `${email}@test.local`;
+    }
+
+    const { error } = await signUp(signupEmail, password);
 
     if (error) {
-      setError(error);
+      // Provide more helpful error message
+      setError(`Signup failed: ${error}`);
     } else {
-      setError('Check your email for confirmation link');
+      setError('Account created successfully! You can now sign in.');
     }
 
     setLoading(false);
