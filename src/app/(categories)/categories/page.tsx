@@ -24,6 +24,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/supabase/client";
+import { useAuth } from "@/lib/auth-context";
 
 type Category = {
   id: string;
@@ -33,6 +34,7 @@ type Category = {
 export default function CategoriesPage() {
   const supabase = createClient();
   const router = useRouter();
+  const { user } = useAuth();
 
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -46,9 +48,12 @@ export default function CategoriesPage() {
 
   // READ
   async function loadCategories() {
+    if (!user) return;
+
     const { data } = await supabase
       .from("categories")
       .select("*")
+      .eq("user_email", user.email)
       .order("created_at", { ascending: false });
 
     setCategories(data || []);
@@ -56,15 +61,15 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     loadCategories();
-  }, []);
+  }, [user]);
 
   // CREATE or UPDATE — SAME BUTTON
   async function saveCategory() {
-    if (!name.trim()) return;
+    if (!name.trim() || !user) return;
 
     if (mode === "add") {
       // CREATE
-      await supabase.from("categories").insert({ name });
+      await supabase.from("categories").insert({ name, user_email: user.email });
     } else if (mode === "edit" && editId) {
       // UPDATE
       await supabase.from("categories").update({ name }).eq("id", editId);

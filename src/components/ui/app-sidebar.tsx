@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button"
 import { Database, Store, LogOut } from "lucide-react"
 
 export function AppSidebar() {
-  const { signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -48,6 +48,12 @@ export function AppSidebar() {
           <Database className="size-6" />
           <span className="font-semibold">Category Manager</span>
         </div>
+        {user && (
+          <div className="px-2 py-2 text-sm text-muted-foreground">
+            <div className="font-medium">Welcome,</div>
+            <div className="truncate">{user.email}</div>
+          </div>
+        )}
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -82,7 +88,7 @@ export function AppSidebar() {
                 onClick={handleSignOut}
                 className="w-full justify-start"
               >
-                <LogOut className="size-4" />
+                {/* <LogOut className="size-4" /> */}
                 <span>Sign Out</span>
               </Button>
             </SidebarMenuButton>

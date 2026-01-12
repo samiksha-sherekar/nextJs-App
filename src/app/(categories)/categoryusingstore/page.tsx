@@ -23,9 +23,11 @@ import {
 } from "@/components/ui/dialog";
 
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/auth-context";
 
 
 export default function CategoryusingstorePage() {
+  const { user } = useAuth();
   const { categories, load, add, update, remove } = useCategoryStore();
 
   const [open, setOpen] = useState(false);
@@ -33,16 +35,18 @@ export default function CategoryusingstorePage() {
   const [editId, setEditId] = useState<string | null>(null);
 
   useEffect(() => {
-    load();
-  }, []);
+    if (user) {
+      load(user.email);
+    }
+  }, [user]);
 
   async function handleSave() {
-    if (!name.trim()) return;
+    if (!name.trim() || !user) return;
 
     if (editId) {
       await update(editId, name);
     } else {
-      await add(name);
+      await add(name, user.email);
     }
 
     setName("");
