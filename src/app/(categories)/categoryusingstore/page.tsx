@@ -24,17 +24,22 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 
 export default function CategoryusingstorePage() {
   const { user } = useAuth();
-  const { categories, load, add, update, remove } = useCategoryStore();
+  const { categories, load, add, update, remove, setSelectedCategory } = useCategoryStore();
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
-
+  const router = useRouter();
   useEffect(() => {
+    if (user === null) {
+        router.replace("/auth/login");
+        return;
+      }
     if (user) {
       load(user.email);
     }
@@ -120,6 +125,17 @@ export default function CategoryusingstorePage() {
                     onClick={() => remove(c.id)}
                   >
                     Delete
+                  </Button>
+
+                  <Button
+                    key={c.id}
+                    variant="secondary"
+                    onClick={() => {
+                      setSelectedCategory(c);
+                      router.push('/products');
+                    }}
+                  >
+                    Products (Without useing query params routing)
                   </Button>
                 </TableCell>
               </TableRow>

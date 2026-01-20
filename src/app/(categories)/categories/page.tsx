@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useCategoryStore } from "@/lib/store/categoryStore";
 import {
   Table,
   TableBody,
@@ -37,7 +38,7 @@ export default function CategoriesPage() {
   const { user } = useAuth();
 
   const [categories, setCategories] = useState<Category[]>([]);
-
+  const { setSelectedCategory } = useCategoryStore();
   // shared dialog state
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"add" | "edit">("add");
@@ -59,8 +60,15 @@ export default function CategoriesPage() {
     setCategories(data || []);
   }
 
-  useEffect(() => {
-    loadCategories();
+ useEffect(() => {
+    if (user === null) {
+      router.replace("/auth/login");
+      return;
+    }
+
+    if (user) {
+      loadCategories();
+    }
   }, [user]);
 
   // CREATE or UPDATE — SAME BUTTON
@@ -168,10 +176,20 @@ export default function CategoriesPage() {
                     Delete
                   </Button>
                   <Button
-                    variant="secondary"
+                    variant="outline"
                     onClick={() => router.push(`/subcategories?id=${cat.id}`)}
                   >
-                    Sub Category
+                    Sub Category with Query params routing
+                  </Button>
+                  <Button
+                    key={cat.id}
+                    variant="outline"
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      router.push('/products');
+                    }}
+                  >
+                    Products (Without useing query params routing)
                   </Button>
                 </TableCell>
               </TableRow>

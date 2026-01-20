@@ -9,11 +9,13 @@ type Category = {
 type CategoryState = {
   categories: Category[];
   loading: boolean;
+  selectedCategory: Category | null;
 
   load: (userId?: string) => Promise<void>;
   add: (name: string, userId?: string) => Promise<void>;
   update: (id: string, name: string) => Promise<void>;
   remove: (id: string) => Promise<void>;
+  setSelectedCategory: (category: Category | null) => void;
 };
 
 export const useCategoryStore = create<CategoryState>((set, get) => {
@@ -22,6 +24,7 @@ export const useCategoryStore = create<CategoryState>((set, get) => {
   return {
     categories: [],
     loading: false,
+    selectedCategory: null,
 
     // READ
     load: async (userEmail?: string) => {
@@ -77,6 +80,11 @@ export const useCategoryStore = create<CategoryState>((set, get) => {
       set({
         categories: get().categories.filter((c) => c.id !== id),
       });
+    },
+
+    // SET SELECTED CATEGORY
+    setSelectedCategory: (category) => {
+      set({ selectedCategory: category });
     },
   };
 });

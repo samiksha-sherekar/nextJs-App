@@ -24,6 +24,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/supabase/client";
+import { useAuth } from "@/lib/auth-context";
 
 // Force dynamic rendering since this page uses search params
 export const dynamic = 'force-dynamic';
@@ -40,6 +41,7 @@ function SubcategoriesPage() {
   const searchParams = useSearchParams();
   const categoryId = searchParams.get('id');
   console.log(categoryId);
+  const { user } = useAuth();
   const supabase = createClient();
   // shared dialog state
   const [open, setOpen] = useState(false);
@@ -58,8 +60,14 @@ function SubcategoriesPage() {
 
   // Hook
   useEffect(() =>{
-    LoadSubCategories();
-  },[]);
+     if (user === null) {
+        router.replace("/auth/login");
+        return;
+      }
+    if (user) {
+      LoadSubCategories();
+    }
+  }, [user]);
 
   // CREATE or UPDATE — SAME BUTTON
   async function saveCategory() {

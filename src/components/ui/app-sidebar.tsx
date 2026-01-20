@@ -29,7 +29,7 @@ export function AppSidebar() {
       description: "CRUD operations using direct Supabase calls"
     },
     {
-      title: "Using Store",
+      title: "Using State management (Zustand)",
       url: "/categoryusingstore",
       // icon: Store,
       description: "State management with Zustand store"
