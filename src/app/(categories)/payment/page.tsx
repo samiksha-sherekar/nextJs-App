@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
 function CheckoutForm() {
@@ -24,6 +24,9 @@ function CheckoutForm() {
     router.replace("/auth/login");
     return null;
   }
+
+  // Check if Stripe is properly initialized
+  const isStripeReady = stripe && elements;
 
   async function handlePay() {
   if (!stripe || !elements) return;
