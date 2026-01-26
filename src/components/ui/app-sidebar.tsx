@@ -33,6 +33,18 @@ export function AppSidebar() {
       url: "/categoryusingstore",
       // icon: Store,
       description: "State management with Zustand store"
+    },
+    {
+      title: "Using Edge Functions Demo",
+      url: "/hello",
+      // icon: Store,
+      description: "Invoke Supabase Edge Functions for operations"
+    },
+    {
+      title: "Using Edge Functions",
+      url: "/payment",
+      // icon: Store,
+      description: "Invoke Supabase Edge Functions for operations"
     }
   ]
 

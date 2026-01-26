@@ -34,3 +34,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Supabase Edge Function
+For Payment use npx supabase set STRIPE_SECRET_KEY= Seceret key for setting secret key
+for supabase function npx supabase functions new create-payment
+for depolyment npx supabase functions deploy create-payment
+npm install @stripe/stripe-js @stripe/react-stripe-js
