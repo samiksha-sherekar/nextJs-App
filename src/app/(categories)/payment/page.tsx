@@ -98,9 +98,10 @@ function CheckoutForm() {
                 color: '#aab7c4',
               },
             },
-            // invalid: {
-            //   color: '#ff0000', // Red color for invalid card numbers
-            // },
+            invalid: {
+              color: "#000",        // 🔥 no red
+              iconColor: "#000", 
+            },
           },
           hidePostalCode: true,
         }}
